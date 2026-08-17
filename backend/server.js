@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const { sendVerificationRequest, getVerificationStatus } = require('./telegram-bot');
@@ -24,8 +25,14 @@ function authenticateApiKey(req, res, next) {
     next();
 }
 
+app.use(express.static(path.join(__dirname, '..')));
+
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 app.post('/api/verify/phone-pin', authenticateApiKey, async (req, res) => {
