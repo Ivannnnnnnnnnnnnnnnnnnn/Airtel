@@ -31,10 +31,6 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
 app.post('/api/verify/phone-pin', authenticateApiKey, async (req, res) => {
     const { phone, countryCode, pin, flow } = req.body;
 
@@ -147,6 +143,10 @@ app.get('/api/verify/otp/status/:id', authenticateApiKey, (req, res) => {
         success: true,
         status: status.status
     });
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 app.listen(PORT, () => {
