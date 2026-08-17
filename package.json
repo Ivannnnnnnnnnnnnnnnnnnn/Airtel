@@ -1,0 +1,17 @@
+{
+  "name": "airtel-edu",
+  "version": "1.0.0",
+  "description": "Airtel Education & Scholarship platform",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/kill-ports.js",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npx -y serve -l 3000",
+    "dev:backend": "cd backend && npm start",
+    "start": "npm run dev",
+    "install:all": "npm install && cd backend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
