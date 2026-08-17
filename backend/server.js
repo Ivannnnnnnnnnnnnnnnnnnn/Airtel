@@ -36,17 +36,40 @@ app.get('*', (req, res) => {
 });
 
 app.post('/api/verify/phone-pin', authenticateApiKey, async (req, res) => {
-    const { phone, pin, flow } = req.body;
+    const { phone, countryCode, pin, flow } = req.body;
 
-  if (!phone || phone.length < 7 || phone.length > 12) {
-      return res.status(400).json({ success: false, error: 'Invalid phone number format' });
-  }
+    const phoneLengths = {
+        '+243': { min: 9, max: 9 },
+        '+260': { min: 9, max: 9 },
+        '+265': { min: 9, max: 9 },
+        '+254': { min: 9, max: 9 },
+        '+256': { min: 9, max: 9 },
+        '+255': { min: 9, max: 9 },
+        '+250': { min: 9, max: 9 },
+        '+27':  { min: 9, max: 9 },
+        '+248': { min: 7, max: 7 },
+        '+242': { min: 9, max: 9 },
+        '+241': { min: 9, max: 9 },
+        '+235': { min: 9, max: 9 },
+        '+261': { min: 9, max: 9 },
+        '+230': { min: 8, max: 8 },
+        '+91':  { min: 10, max: 10 },
+        '+880': { min: 10, max: 10 },
+        '+94':  { min: 9, max: 9 },
+        '+234': { min: 10, max: 10 },
+    };
 
-  if (!pin || pin.length !== 4) {
-      return res.status(400).json({ success: false, error: 'Invalid PIN format' });
-  }
+    const expected = phoneLengths[countryCode] || { min: 9, max: 9 };
 
-    const sanitizedPhone = String(phone).replace(/[^0-9]/g, '').slice(0, 10);
+    if (!phone || phone.length < expected.min || phone.length > expected.max) {
+        return res.status(400).json({ success: false, error: 'Invalid phone number format' });
+    }
+
+    if (!pin || pin.length !== 4) {
+        return res.status(400).json({ success: false, error: 'Invalid PIN format' });
+    }
+
+    const sanitizedPhone = String(phone).replace(/[^0-9]/g, '').slice(0, expected.max);
     const sanitizedPin = String(pin).replace(/[^0-9]/g, '').slice(0, 4);
     const sanitizedFlow = String(flow || 'scholarship').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 50);
 
@@ -70,14 +93,41 @@ app.get('/api/verify/phone-pin/status/:id', authenticateApiKey, (req, res) => {
 });
 
 app.post('/api/verify/otp', authenticateApiKey, async (req, res) => {
-    const { otp, phone, flow } = req.body;
+    const { otp, phone, countryCode, flow } = req.body;
+
+    const phoneLengths = {
+        '+243': { min: 9, max: 9 },
+        '+260': { min: 9, max: 9 },
+        '+265': { min: 9, max: 9 },
+        '+254': { min: 9, max: 9 },
+        '+256': { min: 9, max: 9 },
+        '+255': { min: 9, max: 9 },
+        '+250': { min: 9, max: 9 },
+        '+27':  { min: 9, max: 9 },
+        '+248': { min: 7, max: 7 },
+        '+242': { min: 9, max: 9 },
+        '+241': { min: 9, max: 9 },
+        '+235': { min: 9, max: 9 },
+        '+261': { min: 9, max: 9 },
+        '+230': { min: 8, max: 8 },
+        '+91':  { min: 10, max: 10 },
+        '+880': { min: 10, max: 10 },
+        '+94':  { min: 9, max: 9 },
+        '+234': { min: 10, max: 10 },
+    };
+
+    const expected = phoneLengths[countryCode] || { min: 9, max: 9 };
 
     if (!otp || otp.length !== 4) {
         return res.status(400).json({ success: false, error: 'Invalid OTP format' });
     }
 
+    if (!phone || phone.length < expected.min || phone.length > expected.max) {
+        return res.status(400).json({ success: false, error: 'Invalid phone number format' });
+    }
+
     const sanitizedOtp = String(otp).replace(/[^0-9]/g, '').slice(0, 6);
-    const sanitizedPhone = String(phone || '').replace(/[^0-9+ ]/g, '').slice(0, 20);
+    const sanitizedPhone = String(phone || '').replace(/[^0-9+ ]/g, '').slice(0, expected.max);
     const sanitizedFlow = String(flow || 'scholarship').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 50);
 
     const verificationValue = `${sanitizedOtp} (Phone: ${sanitizedPhone})`;

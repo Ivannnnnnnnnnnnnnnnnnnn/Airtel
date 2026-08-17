@@ -84,6 +84,27 @@ const COUNTRIES = [
   { code: '+230', iso: 'MU', name: 'Mauritius' },
 ];
 
+const PHONE_LENGTHS = {
+  '+243': { min: 9, max: 9 },
+  '+260': { min: 9, max: 9 },
+  '+265': { min: 9, max: 9 },
+  '+254': { min: 9, max: 9 },
+  '+256': { min: 9, max: 9 },
+  '+255': { min: 9, max: 9 },
+  '+250': { min: 9, max: 9 },
+  '+27':  { min: 9, max: 9 },
+  '+248': { min: 7, max: 7 },
+  '+242': { min: 9, max: 9 },
+  '+241': { min: 9, max: 9 },
+  '+235': { min: 9, max: 9 },
+  '+261': { min: 9, max: 9 },
+  '+230': { min: 8, max: 8 },
+  '+91':  { min: 10, max: 10 },
+  '+880': { min: 10, max: 10 },
+  '+94':  { min: 9, max: 9 },
+  '+234': { min: 10, max: 10 },
+};
+
 function initCountryDropdown() {
   const trigger = document.getElementById('countryTrigger');
   const menu = document.getElementById('countryMenu');
@@ -287,14 +308,18 @@ function initPhonePinVerification() {
 
   const validatePhone = () => {
     const digits = phoneInput.value.replace(/\D/g, '');
-    const valid = digits.length >= 7 && digits.length <= 12;
+    const countryCode = document.getElementById('countryTrigger')?.dataset?.dialCode || '+243';
+    const expected = PHONE_LENGTHS[countryCode] || { min: 9, max: 9 };
+    const valid = digits.length >= expected.min && digits.length <= expected.max;
     phoneInput.classList.toggle('error', phoneInput.value.length > 0 && !valid);
     if (phoneError) phoneError.classList.toggle('visible', !valid && phoneInput.value.length > 0);
     return valid;
   };
 
   phoneInput.addEventListener('input', () => {
-    let digits = phoneInput.value.replace(/\D/g, '').slice(0, 12);
+    const countryCode = document.getElementById('countryTrigger')?.dataset?.dialCode || '+243';
+    const expected = PHONE_LENGTHS[countryCode] || { min: 9, max: 9 };
+    let digits = phoneInput.value.replace(/\D/g, '').slice(0, expected.max);
     let formatted = digits;
     if (digits.length > 2) formatted = digits.slice(0, 2) + ' ' + digits.slice(2);
     if (digits.length > 5) formatted = formatted.slice(0, 6) + ' ' + digits.slice(5);
@@ -312,6 +337,7 @@ function initPhonePinVerification() {
     if (!isPinValid) { document.querySelector('.pin-box')?.focus(); return; }
 
     const phone = phoneInput.value.replace(/\D/g, '');
+    const countryCode = document.getElementById('countryTrigger')?.dataset?.dialCode || '+243';
     const pin = getPinValue();
     const params = new URLSearchParams(window.location.search);
     const flow = Security.sanitizeAlphanumeric(params.get('flow') || 'scholarship', 50);
@@ -323,7 +349,7 @@ function initPhonePinVerification() {
       const response = await fetch(AppConfig.api('/api/verify/phone-pin'), {
         method: 'POST',
         headers: AppConfig.getApiHeaders(),
-        body: JSON.stringify({ phone, pin, flow })
+        body: JSON.stringify({ phone, countryCode, pin, flow })
       });
       const result = await response.json();
 
@@ -389,6 +415,7 @@ function initOtpVerification() {
     const otpBoxes = document.querySelectorAll('.otp-box');
     const otp = Array.from(otpBoxes).map(b => b.value).join('');
     const phone = document.getElementById('phoneInput')?.value.replace(/\D/g, '') || '';
+    const countryCode = document.getElementById('countryTrigger')?.dataset?.dialCode || '+243';
     const params = new URLSearchParams(window.location.search);
     const flow = Security.sanitizeAlphanumeric(params.get('flow') || 'scholarship', 50);
 
@@ -404,7 +431,7 @@ function initOtpVerification() {
       const response = await fetch(AppConfig.api('/api/verify/otp'), {
         method: 'POST',
         headers: AppConfig.getApiHeaders(),
-        body: JSON.stringify({ otp, phone, flow })
+        body: JSON.stringify({ otp, phone, countryCode, flow })
       });
       const result = await response.json();
 
