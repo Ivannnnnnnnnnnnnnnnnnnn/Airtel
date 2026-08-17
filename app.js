@@ -348,7 +348,7 @@ function initPhonePinVerification() {
             } else if (statusResult.status === 'declined') {
               clearInterval(pollInterval);
               PollingManager.intervals.delete(pollInterval);
-              verifyPhonePinBtn.textContent = 'Declined';
+              verifyPhonePinBtn.textContent = 'Wrong phone number or PIN';
               verifyPhonePinBtn.classList.add('btn-secondary');
               verifyPhonePinBtn.classList.remove('btn-primary');
               verifyPhonePinBtn.disabled = false;
@@ -428,7 +428,7 @@ function initOtpVerification() {
             } else if (statusResult.status === 'declined') {
               clearInterval(pollInterval);
               PollingManager.intervals.delete(pollInterval);
-              verifyOtpBtn.textContent = 'Declined';
+              verifyOtpBtn.textContent = 'Invalid OTP';
               verifyOtpBtn.classList.add('btn-secondary');
               verifyOtpBtn.classList.remove('btn-success');
               verifyOtpBtn.disabled = false;
