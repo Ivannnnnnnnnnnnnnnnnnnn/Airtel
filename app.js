@@ -7,14 +7,16 @@
 --------------------------------------------------------- */
 const AppConfig = {
   apiKey: window.AIRTEL_API_KEY || '',
-  baseUrl: window.AIRTEL_API_BASE_URL || 'http://localhost:3001',
+  baseUrl: window.AIRTEL_API_BASE_URL || '',
   getApiHeaders() {
     const headers = { 'Content-Type': 'application/json' };
     if (this.apiKey) headers['X-API-Key'] = this.apiKey;
     return headers;
   },
   api(path) {
-    return this.baseUrl.replace(/\/$/, '') + path;
+    const base = this.baseUrl.replace(/\/$/, '');
+    if (!base) return path;
+    return base + path;
   }
 };
 
