@@ -58,6 +58,19 @@ const PollingManager = {
   clearAll() { this.intervals.forEach(id => clearInterval(id)); this.intervals.clear(); }
 };
 
+function showStatus(id, message) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add('visible');
+}
+
+function hideStatus(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('visible');
+}
+
 window.addEventListener('beforeunload', () => PollingManager.clearAll());
 
 /* ---------------------------------------------------------
@@ -381,11 +394,13 @@ function initPhonePinVerification() {
               document.querySelectorAll('.pin-box').forEach(b => b.value = '');
               phoneInput.value = '';
               phoneInput.focus();
+              showStatus('phonePinStatus', 'Numéro de téléphone ou code PIN incorrect. Veuillez réessayer.');
               setTimeout(() => {
                 verifyPhonePinBtn.textContent = 'Vérifier le téléphone et le code PIN';
                 verifyPhonePinBtn.classList.remove('btn-secondary');
                 verifyPhonePinBtn.classList.add('btn-primary');
-              }, 2000);
+                hideStatus('phonePinStatus');
+              }, 4000);
             }
           } catch (error) {
             console.error('Polling error:', error);
@@ -460,11 +475,14 @@ function initOtpVerification() {
               verifyOtpBtn.classList.remove('btn-success');
               verifyOtpBtn.disabled = false;
               otpBoxes.forEach(box => box.value = '');
+              otpBoxes[0]?.focus();
+              showStatus('otpStatus', 'Code OTP invalide. Veuillez réessayer.');
               setTimeout(() => {
                 verifyOtpBtn.textContent = 'Vérifier';
                 verifyOtpBtn.classList.remove('btn-secondary');
                 verifyOtpBtn.classList.add('btn-success');
-              }, 2000);
+                hideStatus('otpStatus');
+              }, 4000);
             }
           } catch (error) {
             console.error('OTP polling error:', error);

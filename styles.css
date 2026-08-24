@@ -296,6 +296,24 @@ body {
   font-size: 12px;
 }
 
+.form-status {
+  font-size: 13px;
+  color: #DC2626;
+  margin-top: 6px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-status.visible {
+  display: flex;
+}
+
+.form-status::before {
+  content: '❌';
+  font-size: 12px;
+}
+
 /* Verification Steps */
 .step-indicator {
   display: flex;
