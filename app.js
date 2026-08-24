@@ -26,7 +26,9 @@ const AppConfig = {
         this.apiKey = data.apiKey || '';
       }
     } catch (e) {
-      console.warn('Failed to load API config:', e);
+      console.warn('Failed to load API config from server:', e.message);
+      console.warn('Make sure the backend is running and API_KEY is set.');
+      this.apiKey = '';
     }
   }
 };
