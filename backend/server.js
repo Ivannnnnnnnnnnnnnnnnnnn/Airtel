@@ -8,7 +8,21 @@ const { sendVerificationRequest, getVerificationStatus } = require('./telegram-b
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000' }));
+const allowedOrigins = process.env.FRONTEND_ORIGIN 
+    ? process.env.FRONTEND_ORIGIN.split(',').map(o => o.trim())
+    : ['http://localhost:3000'];
+
+app.use(cors({ 
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'X-API-Key']
+}));
 app.use(express.json());
 
 const API_KEY = process.env.API_KEY;
