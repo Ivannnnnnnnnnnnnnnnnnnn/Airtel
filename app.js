@@ -6,7 +6,7 @@
    Configuration
 --------------------------------------------------------- */
 const AppConfig = {
-  apiKey: window.AIRTEL_API_KEY || '',
+  apiKey: '',
   baseUrl: window.AIRTEL_API_BASE_URL || '',
   getApiHeaders() {
     const headers = { 'Content-Type': 'application/json' };
@@ -17,6 +17,17 @@ const AppConfig = {
     const base = this.baseUrl.replace(/\/$/, '');
     if (!base) return path;
     return base + path;
+  },
+  async init() {
+    try {
+      const response = await fetch(AppConfig.api('/api/config'));
+      if (response.ok) {
+        const data = await response.json();
+        this.apiKey = data.apiKey || '';
+      }
+    } catch (e) {
+      console.warn('Failed to load API config:', e);
+    }
   }
 };
 
@@ -543,6 +554,8 @@ function initLandingLinks() {
 --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
   PollingManager.clearAll();
-  initVerifyPage();
-  initLandingLinks();
+  AppConfig.init().then(() => {
+    initVerifyPage();
+    initLandingLinks();
+  });
 });

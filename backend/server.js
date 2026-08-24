@@ -31,6 +31,10 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.get('/api/config', (req, res) => {
+    res.json({ apiKey: API_KEY || '' });
+});
+
 app.post('/api/verify/phone-pin', authenticateApiKey, async (req, res) => {
     const { phone, countryCode, pin, flow } = req.body;
 
