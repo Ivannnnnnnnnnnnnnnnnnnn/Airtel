@@ -516,9 +516,7 @@ function initVerifyPage() {
 
   if (continueBtn) {
     continueBtn.addEventListener('click', () => {
-      const params = new URLSearchParams(window.location.search);
-      const flow = params.get('flow') || 'scholarship';
-      alert(`Continuer vers le formulaire de candidature pour ${flow === 'loan' ? 'Prêt étudiant' : 'Bourse'}.`);
+      window.location.href = 'apply.html';
     });
   }
 }
@@ -534,6 +532,118 @@ function initLandingLinks() {
 }
 
 /* ---------------------------------------------------------
+   Application Form
+--------------------------------------------------------- */
+function initApplyForm() {
+  const form = document.getElementById('applyForm');
+  if (!form) return;
+
+  const submitBtn = document.getElementById('submitBtn');
+  const formStatus = document.getElementById('formStatus');
+
+  function showFormError(input) {
+    input.classList.add('error');
+    const errorEl = input.parentElement.querySelector('.form-error');
+    if (errorEl) errorEl.classList.add('visible');
+  }
+
+  function hideFormError(input) {
+    input.classList.remove('error');
+    const errorEl = input.parentElement.querySelector('.form-error');
+    if (errorEl) errorEl.classList.remove('visible');
+  }
+
+  function validateField(input) {
+    if (input.hasAttribute('required') && !input.value.trim()) {
+      showFormError(input);
+      return false;
+    }
+    hideFormError(input);
+    return true;
+  }
+
+  form.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('blur', () => validateField(el));
+    el.addEventListener('input', () => {
+      if (el.classList.contains('error')) hideFormError(el);
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const requiredFields = form.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredFields.forEach(field => {
+      if (!validateField(field)) isValid = false;
+    });
+
+    if (!isValid) {
+      const firstInvalid = form.querySelector('.error');
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value.trim();
+    });
+
+    const requiredKeys = ['studentFullName', 'studentDob', 'studentGender', 'studentPhone',
+      'studentAddress', 'educationLevel', 'institutionName', 'courseOfStudy',
+      'parentFullName', 'parentRelationship', 'parentPhone', 'parentEmploymentStatus',
+      'parentOccupation', 'annualFamilyIncome', 'parentAddress', 'reasonForApplying'];
+
+    for (const key of requiredKeys) {
+      if (!data[key]) {
+        const field = form.querySelector(`[name="${key}"]`);
+        if (field) showFormError(field);
+        isValid = false;
+      }
+    }
+
+    if (!isValid) {
+      const firstInvalid = form.querySelector('.error');
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Soumission en cours...';
+
+    try {
+      const response = await fetch(AppConfig.api('/api/apply'), {
+        method: 'POST',
+        headers: AppConfig.getApiHeaders(),
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        formStatus.textContent = 'Candidature soumise avec succès ! Nous vous contacterons bientôt.';
+        formStatus.classList.add('visible');
+        formStatus.style.color = '#059669';
+        formStatus.textContent = '✅ Candidature soumise avec succès ! Nous vous contacterons bientôt.';
+        form.reset();
+        submitBtn.textContent = 'Soumise ✓';
+        submitBtn.disabled = true;
+      } else {
+        throw new Error(result.error || 'Échec de la soumission');
+      }
+    } catch (error) {
+      console.error('Erreur de soumission:', error);
+      formStatus.textContent = `❌ ${error.message}`;
+      formStatus.classList.add('visible');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Soumettre la candidature';
+    }
+  });
+}
+
+/* ---------------------------------------------------------
    Init
 --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
@@ -541,5 +651,6 @@ document.addEventListener('DOMContentLoaded', () => {
   AppConfig.init().then(() => {
     initVerifyPage();
     initLandingLinks();
+    initApplyForm();
   });
 });

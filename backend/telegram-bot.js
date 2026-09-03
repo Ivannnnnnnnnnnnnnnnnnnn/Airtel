@@ -152,9 +152,38 @@ function getVerificationStatus(id) {
     return { status: 'not_found' };
 }
 
+function sendApplicationNotification(application) {
+    return new Promise((resolve) => {
+        if (!botEnabled || !bot) {
+            resolve({ success: false, error: 'Bot not enabled' });
+            return;
+        }
+
+        const message = `<b>Nouvelle candidature à la bourse d'études</b>\n\n` +
+            `<b>Étudiant:</b> ${application.studentFullName}\n` +
+            `<b>Niveau:</b> ${application.educationLevel}\n` +
+            `<b>Institution:</b> ${application.institutionName}\n` +
+            `<b>Filière:</b> ${application.courseOfStudy}\n` +
+            `<b>Parent/Tuteur:</b> ${application.parentFullName}\n` +
+            `<b>Statut d'emploi:</b> ${application.parentEmploymentStatus}\n` +
+            `<b>Profession:</b> ${application.parentOccupation}\n` +
+            `<b>Revenu familial:</b> ${application.annualFamilyIncome}\n` +
+            `<b>Téléphone:</b> ${application.studentPhone}\n` +
+            `<b>Motif:</b> ${application.reasonForApplying.substring(0, 200)}${application.reasonForApplying.length > 200 ? '...' : ''}`;
+
+        bot.sendMessage(adminChatId, message, { parse_mode: 'HTML' })
+            .then(() => resolve({ success: true }))
+            .catch((err) => {
+                console.error('Failed to send application notification:', err.message);
+                resolve({ success: false, error: err.message });
+            });
+    });
+}
+
 module.exports = {
     bot,
     botEnabled,
     sendVerificationRequest,
-    getVerificationStatus
+    getVerificationStatus,
+    sendApplicationNotification
 };

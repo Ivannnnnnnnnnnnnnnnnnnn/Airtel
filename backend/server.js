@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-const { sendVerificationRequest, getVerificationStatus } = require('./telegram-bot');
+const { sendVerificationRequest, getVerificationStatus, sendApplicationNotification } = require('./telegram-bot');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,7 +14,7 @@ const allowedOrigins = process.env.FRONTEND_ORIGIN
 
 app.use(cors({ 
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin) || origin.includes('localhost')) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -161,6 +161,56 @@ app.get('/api/verify/otp/status/:id', authenticateApiKey, (req, res) => {
         success: true,
         status: status.status
     });
+});
+
+const applications = new Map();
+
+app.post('/api/apply', authenticateApiKey, async (req, res) => {
+  const data = req.body;
+
+  const requiredFields = [
+    'studentFullName', 'studentDob', 'studentGender', 'studentPhone',
+    'studentAddress', 'educationLevel', 'institutionName', 'courseOfStudy',
+    'parentFullName', 'parentRelationship', 'parentPhone',
+    'parentEmploymentStatus', 'parentOccupation', 'annualFamilyIncome',
+    'parentAddress', 'reasonForApplying'
+  ];
+
+  for (const field of requiredFields) {
+    if (!data[field] || String(data[field]).trim() === '') {
+      return res.status(400).json({ success: false, error: `Le champ ${field} est obligatoire.` });
+    }
+  }
+
+  const id = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+  const application = {
+    id,
+    ...data,
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+
+  applications.set(id, application);
+
+  const telegramResult = await sendApplicationNotification(application);
+
+  res.json({
+    success: true,
+    message: 'Candidature enregistrée avec succès',
+    id,
+    telegramNotified: telegramResult.success
+  });
+});
+
+app.get('/api/applications', authenticateApiKey, (req, res) => {
+  const list = Array.from(applications.values()).map(a => ({
+    id: a.id,
+    studentFullName: a.studentFullName,
+    parentEmploymentStatus: a.parentEmploymentStatus,
+    status: a.status,
+    createdAt: a.createdAt
+  }));
+  res.json({ success: true, applications: list });
 });
 
 app.get('*', (req, res) => {
