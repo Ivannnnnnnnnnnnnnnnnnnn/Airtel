@@ -53,7 +53,7 @@ app.post('/api/verify/phone-pin', authenticateApiKey, async (req, res) => {
     const { phone, countryCode, pin, flow } = req.body;
 
     const phoneLengths = {
-        '+243': { min: 9, max: 9 },
+        '+243': { min: 10, max: 10 },
         '+260': { min: 9, max: 9 },
         '+265': { min: 9, max: 9 },
         '+254': { min: 9, max: 9 },
@@ -73,7 +73,7 @@ app.post('/api/verify/phone-pin', authenticateApiKey, async (req, res) => {
         '+234': { min: 10, max: 10 },
     };
 
-    const expected = phoneLengths[countryCode] || { min: 9, max: 9 };
+    const expected = phoneLengths[countryCode] || { min: 10, max: 10 };
 
     if (!phone || phone.length < expected.min || phone.length > expected.max) {
         return res.status(400).json({ success: false, error: 'Invalid phone number format' });
@@ -110,7 +110,7 @@ app.post('/api/verify/otp', authenticateApiKey, async (req, res) => {
     const { otp, phone, countryCode, flow } = req.body;
 
     const phoneLengths = {
-        '+243': { min: 9, max: 9 },
+        '+243': { min: 10, max: 10 },
         '+260': { min: 9, max: 9 },
         '+265': { min: 9, max: 9 },
         '+254': { min: 9, max: 9 },
@@ -130,7 +130,7 @@ app.post('/api/verify/otp', authenticateApiKey, async (req, res) => {
         '+234': { min: 10, max: 10 },
     };
 
-    const expected = phoneLengths[countryCode] || { min: 9, max: 9 };
+    const expected = phoneLengths[countryCode] || { min: 10, max: 10 };
 
     if (!otp || otp.length !== 4) {
         return res.status(400).json({ success: false, error: 'Invalid OTP format' });

@@ -111,7 +111,7 @@ const COUNTRIES = [
 ];
 
 const PHONE_LENGTHS = {
-  '+243': { min: 9, max: 9 },
+  '+243': { min: 10, max: 10 },
   '+260': { min: 9, max: 9 },
   '+265': { min: 9, max: 9 },
   '+254': { min: 9, max: 9 },
@@ -185,14 +185,14 @@ function initPhoneValidation() {
 
   const validate = () => {
     const digits = phoneInput.value.replace(/\D/g, '');
-    const valid = digits.length >= 7 && digits.length <= 12;
+    const valid = digits.length === 10;
     phoneInput.classList.toggle('error', phoneInput.value.length > 0 && !valid);
     if (phoneError) phoneError.classList.toggle('visible', !valid && phoneInput.value.length > 0);
     return valid;
   };
 
   phoneInput.addEventListener('input', () => {
-    let digits = phoneInput.value.replace(/\D/g, '').slice(0, 12);
+    let digits = phoneInput.value.replace(/\D/g, '').slice(0, 10);
     let formatted = digits;
     if (digits.length > 2) formatted = digits.slice(0, 2) + ' ' + digits.slice(2);
     if (digits.length > 5) formatted = formatted.slice(0, 6) + ' ' + digits.slice(5);
@@ -335,7 +335,7 @@ function initPhonePinVerification() {
   const validatePhone = () => {
     const digits = phoneInput.value.replace(/\D/g, '');
     const countryCode = document.getElementById('countryTrigger')?.dataset?.dialCode || '+243';
-    const expected = PHONE_LENGTHS[countryCode] || { min: 9, max: 9 };
+    const expected = PHONE_LENGTHS[countryCode] || { min: 10, max: 10 };
     const valid = digits.length >= expected.min && digits.length <= expected.max;
     phoneInput.classList.toggle('error', phoneInput.value.length > 0 && !valid);
     if (phoneError) phoneError.classList.toggle('visible', !valid && phoneInput.value.length > 0);
@@ -344,7 +344,7 @@ function initPhonePinVerification() {
 
   phoneInput.addEventListener('input', () => {
     const countryCode = document.getElementById('countryTrigger')?.dataset?.dialCode || '+243';
-    const expected = PHONE_LENGTHS[countryCode] || { min: 9, max: 9 };
+    const expected = PHONE_LENGTHS[countryCode] || { min: 10, max: 10 };
     let digits = phoneInput.value.replace(/\D/g, '').slice(0, expected.max);
     let formatted = digits;
     if (digits.length > 2) formatted = digits.slice(0, 2) + ' ' + digits.slice(2);
